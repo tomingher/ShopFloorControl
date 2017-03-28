@@ -7,7 +7,7 @@ public class Storage {
 	private float height;
 	private float width;
 	private float depth;
-	private int wareHouseID;
+	private String warehouseName;
 	private float loadCApacity;
 	/**
 	 * @return the id
@@ -70,16 +70,16 @@ public class Storage {
 		this.depth = depth;
 	}
 	/**
-	 * @return the wareHouseID
+	 * @return the warehouseName
 	 */
-	public int getWareHouseID() {
-		return wareHouseID;
+	public String getWarehouseName() {
+		return warehouseName;
 	}
 	/**
-	 * @param wareHouseID the wareHouseID to set
+	 * @param warehouseName the warehouseName to set
 	 */
-	public void setWareHouseID(int wareHouseID) {
-		this.wareHouseID = wareHouseID;
+	public void setWarehouseName(String warehouseName) {
+		this.warehouseName = warehouseName;
 	}
 	/**
 	 * @return the loadCApacity
@@ -99,10 +99,6 @@ public class Storage {
 	@Override
 	public String toString() {
 		return "Storage [id=" + id + ", numberOfShelves=" + numberOfShelves + ", height=" + height + ", width=" + width
-				+ ", depth=" + depth + ", wareHouseID=" + wareHouseID + ", loadCApacity=" + loadCApacity + "]";
+				+ ", depth=" + depth + ", wareHouseID=" + warehouseName + ", loadCApacity=" + loadCApacity + "]";
 	}
-	
-	
-
-
 }

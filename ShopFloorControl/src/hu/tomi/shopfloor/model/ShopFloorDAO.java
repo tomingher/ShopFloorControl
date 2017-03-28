@@ -3,6 +3,7 @@ package hu.tomi.shopfloor.model;
 import hu.tomi.shopfloor.model.bean.WareHouse;
 import hu.tomi.shopfloor.model.bean.Storage;
 import hu.tomi.shopfloor.model.bean.Shelf;
+import hu.tomi.shopfloor.model.bean.ShelfData;
 import hu.tomi.shopfloor.model.bean.Location;
 import hu.tomi.shopfloor.model.bean._Package;
 import hu.tomi.shopfloor.model.bean.Product;
@@ -16,6 +17,8 @@ public interface ShopFloorDAO {
 	
 	public List<WareHouse> getWareHouses();
 	
+	public List<String> getWareHouseNames();
+	
 	public boolean addStorage(Storage storage);
 	
 	public List<Storage> getStorages();
@@ -23,6 +26,10 @@ public interface ShopFloorDAO {
 	public boolean addShelf(Shelf shelf);
 	
 	public List<Shelf> getShelves();
+	
+	public List<ShelfData> getShelfData();	
+	
+	public List<String> getStorageNames();
 	
 	public boolean addLocation(Location location);
 	

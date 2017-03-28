@@ -3,7 +3,9 @@ package hu.tomi.shopfloor.model.bean;
 public class Shelf {
 
 	private int id;
+	private String shelfID;
 	private int storageID;
+	private String storageName;
 	private float height;
 	private float width;
 	private float depth;
@@ -20,6 +22,20 @@ public class Shelf {
 	public void setId(int id) {
 		this.id = id;
 	}
+	
+	
+	/**
+	 * @return the shelfID
+	 */
+	public String getShelfID() {
+		return shelfID;
+	}
+	/**
+	 * @param shelfID the shelfID to set
+	 */
+	public void setShelfID(String shelfID) {
+		this.shelfID = shelfID;
+	}
 	/**
 	 * @return the storageID
 	 */
@@ -31,6 +47,18 @@ public class Shelf {
 	 */
 	public void setStorageID(int storageID) {
 		this.storageID = storageID;
+	}	
+	/**
+	 * @return the storageName
+	 */
+	public String getStorageName() {
+		return storageName;
+	}
+	/**
+	 * @param storageName the storageName to set
+	 */
+	public void setStorageName(String storageName) {
+		this.storageName = storageName;
 	}
 	/**
 	 * @return the height

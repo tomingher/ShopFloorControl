@@ -20,22 +20,24 @@ import hu.tomi.shopfloor.model.bean.Storage;
 import hu.tomi.shopfloor.model.bean.WareHouse;
 import hu.tomi.shopfloor.model.bean._Package;
 
-public class ShopFloorDAODB implements ShopFloorDAO {
+public class ShopFloorDAODBCloud implements ShopFloorDAO {
 	
 	List<WareHouse> warehouses = new ArrayList<WareHouse>();	
 	List<String> warehousenamesStrings = new ArrayList<String>();
 	List<Storage>	storages = new ArrayList<Storage>();
+	List<String> storagenameesStrings = new ArrayList<String>();
 	List<Shelf>		shelves = new ArrayList<Shelf>();
+	List<ShelfData>		shelfData = new ArrayList<ShelfData>();
 	List<Product>	products = new ArrayList<Product>();
 	List<Manufacturer>	manufacturers = new ArrayList<Manufacturer>();
 	List<Location>	locations = new ArrayList<Location>();
 	List<_Package> packages = new ArrayList<_Package>();	
 	
-	private static final String DATABASE = "jdbc:postgresql://192.168.1.111:5432/postgres";
+	private static final String DATABASE = "jdbc:postgresql://horton.elephantsql.com:5432/bzmdrebs";
 	
-	private static final String USER = "postgres";
+	private static final String USER = "bzmdrebs";
 	
-	private static final String PASSWORD = "piritty";
+	private static final String PASSWORD = "57mdioyXo6FeAq5kTZXDq8DUzlpumxDD";
 	
 	private static final String SQL_SELECT_WAREHOUSES = "SELECT * FROM warehouse";
 	
@@ -58,10 +60,11 @@ public class ShopFloorDAODB implements ShopFloorDAO {
 			"JOIN warehouse AS wh ON wh.id = s.warehouseid "+
 			"ORDER BY wh.id, s.id;";
 	
-	/*private static final String SQL_INSERT_STORAGE_OLD =
-	        "INSERT INTO storage " +
-	        "(NumberOfShelves, Height, Width, Depth, WarehouseID, LoadCapacity) " +
-	        "VALUES (?, ?, ?, ?, ?, ?)";*/
+	private static final String SQL_SELECT_STORAGENAMES = "SELECT "+
+			"wh.name || ' ' || st.id AS storagename " +
+			"FROM warehouse AS wh " +
+			"JOIN storage AS st ON st.warehouseid = wh.id " +
+			"ORDER BY wh.ID";
 	
 	private static final String SQL_INSERT_STORAGE = "SELECT addStorage(?,?,?,?,?,?)";	
 	
@@ -77,12 +80,28 @@ public class ShopFloorDAODB implements ShopFloorDAO {
 			"sh.loadcapacity AS \"Load Capacity\" " +
 			"FROM shelf AS sh " +
 			"JOIN storage AS st ON st.id = sh.storageid " +
-			"JOIN warehouse AS wh ON wh.id = st.warehouseid ";
+			"JOIN warehouse AS wh ON wh.id = st.warehouseid " +
+			"ORDER BY sh.ID";
 	
-	private static final String SQL_INSERT_SHELF =
-	        "INSERT INTO shelf " +
-	        "(StorageID, Height, Width, Depth, LoadCapacity) " +
-	        "VALUES (?, ?, ?, ?, ?)";
+	private static final String SQL_SELECT_SHELFDATA = 	
+			"SELECT wh.name AS \"Warehouse name\" " +
+			",'Storage ' || st.id AS \"Storage name\" " +
+			",'Shelf ' || sh.id AS \"Shelf\" " +
+			",sh.width AS \"Shelf width\" " +
+			",'Location' || lo.id AS \"Location\" " +
+			"FROM warehouse AS wh " +
+			"JOIN storage AS st ON st.warehouseid = wh.id " +
+			"JOIN shelf AS sh ON sh.storageid = st.id " +
+			"LEFT JOIN location AS lo ON lo.shelfid = sh.id " +
+			"ORDER BY wh.id, st.id, sh.id";
+	
+	//private static final String SQL_INSERT_SHELF = "SELECT addshelf(?,?,?,?,?)";
+	private static final String SQL_INSERT_SHELF = "{call addshelf(?,?,?,?,?) }";
+	//SELECT addshelf('Masodik Raktar 5', 2,2,2,2);
+	
+	        //"INSERT INTO shelf " +
+	        //"(StorageID, Height, Width, Depth, LoadCapacity) " +
+	        //"VALUES (?, ?, ?, ?, ?)";
 	
 	private static final String SQL_SELECT_LOCATIONS = "SELECT * FROM Location";
 	
@@ -112,7 +131,7 @@ public class ShopFloorDAODB implements ShopFloorDAO {
 	        "(name description) " +
 	        "VALUES (?, ?)";
 	
-	public ShopFloorDAODB() {
+	public ShopFloorDAODBCloud() {
       
     }
 	
@@ -130,7 +149,7 @@ public class ShopFloorDAODB implements ShopFloorDAO {
         	conn = DriverManager.getConnection(DATABASE, USER, PASSWORD);
         	
         	if (conn != null) {
-        		System.out.println("Connected to the PostgreSQL server successfully.");
+        		System.out.println("Connected to the PostgreSQL CLOUD server successfully.");
 			}            
         	
         	query = conn.prepareStatement(SQL_INSERT_WAREHOUSE);
@@ -184,7 +203,7 @@ public class ShopFloorDAODB implements ShopFloorDAO {
 			conn = DriverManager.getConnection(DATABASE, USER, PASSWORD);
         	
         	if (conn != null) {
-        		System.out.println("Connected to the PostgreSQL server successfully.");
+        		System.out.println("Connected to the PostgreSQL CLOUD server successfully.");
 			}
         	
         	query = conn.createStatement();
@@ -238,7 +257,7 @@ public class ShopFloorDAODB implements ShopFloorDAO {
 			conn = DriverManager.getConnection(DATABASE, USER, PASSWORD);
         	
         	if (conn != null) {
-        		System.out.println("Connected to the PostgreSQL server successfully.");
+        		System.out.println("Connected to the PostgreSQL CLOUD server successfully.");
 			}
         	
         	query = conn.createStatement();
@@ -289,11 +308,10 @@ public class ShopFloorDAODB implements ShopFloorDAO {
 			conn = DriverManager.getConnection(DATABASE, USER, PASSWORD);
         	
         	if (conn != null) {
-        		System.out.println("Connected to the PostgreSQL server successfully.");
+        		System.out.println("Connected to the PostgreSQL CLOUD server successfully.");
 			}
         	
-        	//addStorage(4,4,4,4, 'teszter', 12);
-        	query = conn.prepareCall("{call addStorage( ?,?,?,?,?,? ) }");
+        	 query = conn.prepareCall("{call addStorage( ?,?,?,?,?,? ) }");
         	
         	 int index = 1;
              query.setInt(index++, storage.getNumberOfShelves());
@@ -350,7 +368,7 @@ public class ShopFloorDAODB implements ShopFloorDAO {
 			conn = DriverManager.getConnection(DATABASE, USER, PASSWORD);
         	
         	if (conn != null) {
-        		System.out.println("Connected to the PostgreSQL server successfully.");
+        		System.out.println("Connected to the PostgreSQL CLOUD server successfully.");
 			}
         	
         	query = conn.createStatement();
@@ -392,10 +410,8 @@ public class ShopFloorDAODB implements ShopFloorDAO {
             } catch (SQLException e) {
                 System.out.println("Failed to close connection when querying storages.");
                 e.printStackTrace();
-            }    
-            
-		}
-		
+            }                
+		}	
 		
 		return storages;
 	}
@@ -405,28 +421,31 @@ public class ShopFloorDAODB implements ShopFloorDAO {
 		boolean everythingisok = false;
 		
 		Connection conn = null;
-		PreparedStatement query = null;
+		CallableStatement query = null;
 		
 		try {
 			conn = DriverManager.getConnection(DATABASE, USER, PASSWORD);
         	
         	if (conn != null) {
-        		System.out.println("Connected to the PostgreSQL server successfully.");
+        		System.out.println("Connected to the PostgreSQL CLOUD server successfully.");
 			}
         	
-        	query = conn.prepareStatement(SQL_INSERT_SHELF);
-        	
+        	query = conn.prepareCall(SQL_INSERT_SHELF);
+        	//query = conn.prepareCall("{call addshelf(?,?,?,?,?) }");
+        	//SELECT addshelf('Masodik Raktar 5', 2,2,2,2);
         	int index = 1;            
-        	query.setInt(index++, shelf.getStorageID());
+        	query.setString(index++, shelf.getStorageName());
         	query.setFloat(index++, shelf.getHeight());
         	query.setFloat(index++, shelf.getWidth());
             query.setFloat(index++, shelf.getDepth());            
             query.setFloat(index++, shelf.getLoadCApacity());
         	        	
-        	int rowsAffected = query.executeUpdate();
-            
-            if (rowsAffected == 1) {
+            boolean procedurewentwell = query.execute();
+            query.close();
+          
+            if (procedurewentwell == true) {
            	 everythingisok = true;
+           	 System.out.println("Succesfully added shelf.");
             }
 			
 		} catch (SQLException e) {
@@ -441,7 +460,6 @@ public class ShopFloorDAODB implements ShopFloorDAO {
                 System.out.println("Failed to close query when adding shelf.");
                 e.printStackTrace();
             }
-
             try {
                 if (conn != null) {
                     conn.close();
@@ -467,7 +485,7 @@ public class ShopFloorDAODB implements ShopFloorDAO {
 			conn = DriverManager.getConnection(DATABASE, USER, PASSWORD);
         	
         	if (conn != null) {
-        		System.out.println("Connected to the PostgreSQL server successfully.");
+        		System.out.println("Connected to the PostgreSQL CLOUD server successfully.");
 			}
         	
         	query = conn.createStatement();
@@ -502,7 +520,6 @@ public class ShopFloorDAODB implements ShopFloorDAO {
                 System.out.println("Failed to close query when querying shelves.");
                 e.printStackTrace();
             }
-
             try {
                 if (conn != null) {
                     conn.close();
@@ -512,7 +529,6 @@ public class ShopFloorDAODB implements ShopFloorDAO {
                 System.out.println("Failed to close connection when querying shelves.");
                 e.printStackTrace();
             }    
-            
 		}
 		
 		return shelves;
@@ -520,8 +536,109 @@ public class ShopFloorDAODB implements ShopFloorDAO {
 	
 	@Override
 	public List<ShelfData> getShelfData() {
-		// TODO Auto-generated method stub
-		return null;
+		Connection conn = null;
+		Statement query = null;
+		
+		shelfData.clear();
+		
+		try {			
+			conn = DriverManager.getConnection(DATABASE, USER, PASSWORD);
+        	
+        	if (conn != null) {
+        		System.out.println("Connected to the PostgreSQL CLOUD server successfully.");
+			}
+        	
+        	query = conn.createStatement();
+        	
+        	ResultSet rs = query.executeQuery(SQL_SELECT_SHELFDATA);
+        	        	
+        	while (rs.next()) {
+				ShelfData shelf = new ShelfData();			
+				
+				shelf.setWarehouseName(rs.getString("Warehouse name"));
+				shelf.setStorageName(rs.getString("Storage name"));
+				shelf.setShelf(rs.getString("Shelf"));
+				shelf.setShelfWidth(rs.getFloat("Shelf width"));
+				shelf.setLocation(rs.getString("Location"));
+								
+				shelfData.add(shelf);						
+				
+			}			
+		} catch (SQLException e) {
+			System.out.println("Failed to retrieve the list of Shelf data");
+            e.printStackTrace();
+		}finally {
+			
+			try {
+                if (query != null) {
+                    query.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("Failed to close query when querying Shelf data.");
+                e.printStackTrace();
+            }
+            try {
+                if (conn != null) {
+                    conn.close();
+                    System.out.println("Connection closed succesfully");
+                }
+            } catch (SQLException e) {
+                System.out.println("Failed to close connection when querying Shelf data.");
+                e.printStackTrace();
+            }    
+		}
+		
+		return shelfData;
+	}
+	
+	@Override	
+	public List<String> getStorageNames() {
+		
+		Connection conn = null;
+		Statement query = null;
+		
+		storagenameesStrings.clear();
+		
+		try {
+			conn = DriverManager.getConnection(DATABASE, USER, PASSWORD);
+        	
+        	if (conn != null) {
+        		System.out.println("Connected to the PostgreSQL CLOUD server successfully.");
+			}
+        	
+        	query = conn.createStatement();
+        	
+        	ResultSet rs = query.executeQuery(SQL_SELECT_STORAGENAMES);
+        	
+        	while (rs.next()) {       		
+   		
+        		storagenameesStrings.add(rs.getString("storagename"));
+				
+			}
+		} catch (SQLException e) {
+			System.out.println("Failed to retrieve the list of storagenames.");
+            e.printStackTrace();
+		}finally {
+			try {
+                if (query != null) {
+                    query.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("Failed to close query when querying storagename.");
+                e.printStackTrace();
+            }
+
+            try {
+                if (conn != null) {
+                    conn.close();
+                    System.out.println("Connection closed successfully!");
+                }
+            } catch (SQLException e) {
+                System.out.println("Failed to close connection when querying storagenames.");
+                e.printStackTrace();
+            }
+		}
+		return storagenameesStrings;
 	}
 
 	@Override
@@ -536,7 +653,7 @@ public class ShopFloorDAODB implements ShopFloorDAO {
 			conn = DriverManager.getConnection(DATABASE, USER, PASSWORD);
         	
         	if (conn != null) {
-        		System.out.println("Connected to the PostgreSQL server successfully.");
+        		System.out.println("Connected to the PostgreSQL CLOUD server successfully.");
 			}
         	
         	query = conn.prepareStatement(SQL_INSERT_LOCATION);
@@ -566,7 +683,6 @@ public class ShopFloorDAODB implements ShopFloorDAO {
                 System.out.println("Failed to close query when adding location.");
                 e.printStackTrace();
             }
-
             try {
                 if (conn != null) {
                     conn.close();
@@ -592,7 +708,7 @@ public class ShopFloorDAODB implements ShopFloorDAO {
 			conn = DriverManager.getConnection(DATABASE, USER, PASSWORD);
         	
         	if (conn != null) {
-        		System.out.println("Connected to the PostgreSQL server successfully.");
+        		System.out.println("Connected to the PostgreSQL CLOUD server successfully.");
 			}
         	
         	query = conn.createStatement();
@@ -623,7 +739,6 @@ public class ShopFloorDAODB implements ShopFloorDAO {
                 System.out.println("Failed to close query when querying locations.");
                 e.printStackTrace();
             }
-
             try {
                 if (conn != null) {
                     conn.close();
@@ -632,8 +747,7 @@ public class ShopFloorDAODB implements ShopFloorDAO {
             } catch (SQLException e) {
                 System.out.println("Failed to close connection when querying locations.");
                 e.printStackTrace();
-            }    
-            
+            }  
 		}
 		
 		return locations;
@@ -651,7 +765,7 @@ public class ShopFloorDAODB implements ShopFloorDAO {
 			conn = DriverManager.getConnection(DATABASE, USER, PASSWORD);
         	
         	if (conn != null) {
-        		System.out.println("Connected to the PostgreSQL server successfully.");
+        		System.out.println("Connected to the PostgreSQL CLOUD server successfully.");
 			}
         	
         	query = conn.prepareStatement(SQL_INSERT_PACKAGE);
@@ -680,7 +794,6 @@ public class ShopFloorDAODB implements ShopFloorDAO {
                 System.out.println("Failed to close query when adding package.");
                 e.printStackTrace();
             }
-
             try {
                 if (conn != null) {
                     conn.close();
@@ -706,7 +819,7 @@ public class ShopFloorDAODB implements ShopFloorDAO {
 			conn = DriverManager.getConnection(DATABASE, USER, PASSWORD);
         	
         	if (conn != null) {
-        		System.out.println("Connected to the PostgreSQL server successfully.");
+        		System.out.println("Connected to the PostgreSQL CLOUD server successfully.");
 			}
         	
         	query = conn.createStatement();
@@ -738,7 +851,6 @@ public class ShopFloorDAODB implements ShopFloorDAO {
                 System.out.println("Failed to close query when querying packages.");
                 e.printStackTrace();
             }
-
             try {
                 if (conn != null) {
                     conn.close();
@@ -747,8 +859,7 @@ public class ShopFloorDAODB implements ShopFloorDAO {
             } catch (SQLException e) {
                 System.out.println("Failed to close connection when querying packages.");
                 e.printStackTrace();
-            }    
-            
+            }   
 		}
 		
 		return packages;
@@ -765,7 +876,7 @@ public class ShopFloorDAODB implements ShopFloorDAO {
 			conn = DriverManager.getConnection(DATABASE, USER, PASSWORD);
         	
         	if (conn != null) {
-        		System.out.println("Connected to the PostgreSQL server successfully.");
+        		System.out.println("Connected to the PostgreSQL CLOUD server successfully.");
 			}
         	
         	query = conn.prepareStatement(SQL_INSERT_PRODUCT);
@@ -794,7 +905,6 @@ public class ShopFloorDAODB implements ShopFloorDAO {
                 System.out.println("Failed to close query when adding product.");
                 e.printStackTrace();
             }
-
             try {
                 if (conn != null) {
                     conn.close();
@@ -820,7 +930,7 @@ public class ShopFloorDAODB implements ShopFloorDAO {
 			conn = DriverManager.getConnection(DATABASE, USER, PASSWORD);
         	
         	if (conn != null) {
-        		System.out.println("Connected to the PostgreSQL server successfully.");
+        		System.out.println("Connected to the PostgreSQL CLOUD server successfully.");
 			}
         	
         	query = conn.createStatement();
@@ -851,7 +961,6 @@ public class ShopFloorDAODB implements ShopFloorDAO {
                 System.out.println("Failed to close query when querying packages.");
                 e.printStackTrace();
             }
-
             try {
                 if (conn != null) {
                     conn.close();
@@ -877,7 +986,7 @@ public class ShopFloorDAODB implements ShopFloorDAO {
 			conn = DriverManager.getConnection(DATABASE, USER, PASSWORD);
         	
         	if (conn != null) {
-        		System.out.println("Connected to the PostgreSQL server successfully.");
+        		System.out.println("Connected to the PostgreSQL CLOUD server successfully.");
 			}
         	
         	query = conn.prepareStatement(SQL_INSERT_MANUFACTURER);
@@ -903,7 +1012,6 @@ public class ShopFloorDAODB implements ShopFloorDAO {
                 System.out.println("Failed to close query when adding manufacturer.");
                 e.printStackTrace();
             }
-
             try {
                 if (conn != null) {
                     conn.close();
@@ -929,7 +1037,7 @@ public class ShopFloorDAODB implements ShopFloorDAO {
 			conn = DriverManager.getConnection(DATABASE, USER, PASSWORD);
         	
         	if (conn != null) {
-        		System.out.println("Connected to the PostgreSQL server successfully.");
+        		System.out.println("Connected to the PostgreSQL CLOUD server successfully.");
 			}
         	
         	query = conn.createStatement();
@@ -959,7 +1067,6 @@ public class ShopFloorDAODB implements ShopFloorDAO {
                 System.out.println("Failed to close query when querying manufacturers.");
                 e.printStackTrace();
             }
-
             try {
                 if (conn != null) {
                     conn.close();
@@ -975,15 +1082,5 @@ public class ShopFloorDAODB implements ShopFloorDAO {
 	}
 
 
-	@Override
-	public List<String> getStorageNames() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
 	
-
-
-
 }
