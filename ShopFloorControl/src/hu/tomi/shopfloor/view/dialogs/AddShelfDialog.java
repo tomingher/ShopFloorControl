@@ -45,7 +45,7 @@ public class AddShelfDialog extends JDialog implements ActionListener {
 			"Second element",
 			"Third element"
 	};
-	//kolbász
+
 	private List<String> storageNamesList;
 	private String[] storageNamesArray;	
 	
