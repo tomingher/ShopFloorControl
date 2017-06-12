@@ -1,13 +1,6 @@
 package hu.tomi.shopfloor.model;
 
-import hu.tomi.shopfloor.model.bean.WareHouse;
-import hu.tomi.shopfloor.model.bean.Storage;
-import hu.tomi.shopfloor.model.bean.Shelf;
-import hu.tomi.shopfloor.model.bean.ShelfData;
-import hu.tomi.shopfloor.model.bean.Location;
-import hu.tomi.shopfloor.model.bean._Package;
-import hu.tomi.shopfloor.model.bean.Product;
-import hu.tomi.shopfloor.model.bean.Manufacturer;
+import hu.tomi.shopfloor.model.bean.*;
 
 import java.util.List;
 
@@ -34,6 +27,8 @@ public interface ShopFloorDAO {
 	public boolean addLocation(Location location);
 	
 	public List<Location> getLocations();
+
+	public List<LocationData> getLocationData();
 	
 	public boolean addPackage(_Package _package);
 	

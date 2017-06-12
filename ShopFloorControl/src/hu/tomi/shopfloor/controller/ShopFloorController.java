@@ -7,9 +7,9 @@ import hu.tomi.shopfloor.model.bean.ShelfData;
 import hu.tomi.shopfloor.model.bean.Location;
 import hu.tomi.shopfloor.model.bean._Package;
 import hu.tomi.shopfloor.model.bean.Product;
+import hu.tomi.shopfloor.model.bean.LocationData;
 import hu.tomi.shopfloor.model.bean.Manufacturer;
 import hu.tomi.shopfloor.model.ShopFloorDAO;
-import hu.tomi.shopfloor.model.ShopFloorDAODB;
 import hu.tomi.shopfloor.model.ShopFloorDAODBCloud;
 import hu.tomi.shopfloor.view.ShopFloorGUI;
 
@@ -32,11 +32,7 @@ public class ShopFloorController {
 	public List<WareHouse> getWareHouses() {
 		return dao.getWareHouses();
 	}
-	
-	/*public List<String> getWarehouseNames(){
-		return dao.getWareHouseNames();
-	}*/
-	
+
 	public String[] getWarehouseNames(){
 		List<String> warehouseNamesList = dao.getWareHouseNames();		
 		
@@ -75,6 +71,10 @@ public class ShopFloorController {
 	
 	public List<Location> getLocations(){
 		return dao.getLocations();
+	}
+
+	public List<LocationData> getLocationData() {
+		return dao.getLocationData();
 	}
 	
 	public boolean addPackage(_Package _package) {

@@ -32,7 +32,7 @@ public class ShopFloorDAODBCloud implements ShopFloorDAO {
     List<Product> products = new ArrayList<Product>();
     List<Manufacturer> manufacturers = new ArrayList<Manufacturer>();
     List<Location> locations = new ArrayList<Location>();
-    List<LocationData> locationData = new ArrayList<LocationData>();
+    List<LocationData> locationDataList = new ArrayList<LocationData>();
     List<_Package> packages = new ArrayList<_Package>();
 
 
@@ -762,6 +762,65 @@ public class ShopFloorDAODBCloud implements ShopFloorDAO {
         }
 
         return locations;
+    }
+
+    @Override
+    public List<LocationData> getLocationData() {
+        Connection conn = null;
+        Statement query = null;
+
+        locationDataList.clear();
+
+        try {
+            conn = DriverManager.getConnection(DATABASE, USER, PASSWORD);
+
+            if (conn != null) {
+                System.out.println("Connected to the PostgreSQL CLOUD server successfully.");
+            }
+
+            query = conn.createStatement();
+
+            ResultSet rs = query.executeQuery(SQL_SELECT_LOCATIONDATA);
+
+            while (rs.next()) {
+                LocationData locationData = new LocationData();
+
+                locationData.setWarehousename(rs.getString("Warehouse name"));
+                locationData.setStoragename(rs.getString("Storage name"));
+                locationData.setShelf(rs.getString("Shelf"));
+                locationData.setShelfwidth(rs.getFloat("Shelf width"));
+                locationData.setLocation(rs.getString("Location"));
+                locationData.setLocationwidth(rs.getString("Location width"));
+                locationData.setFreewidth(rs.getString("Free width"));
+
+                locationDataList.add(locationData);
+
+            }
+        } catch (SQLException e) {
+            System.out.println("Failed to retrieve the list of Location related data");
+            e.printStackTrace();
+        } finally {
+
+            try {
+                if (query != null) {
+                    query.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("Failed to close query when querying location related data.");
+                e.printStackTrace();
+            }
+            try {
+                if (conn != null) {
+                    conn.close();
+                    System.out.println("Connection closed successfully");
+                }
+            } catch (SQLException e) {
+                System.out.println("Failed to close connection when querying locations related data.");
+                e.printStackTrace();
+            }
+        }
+
+        return locationDataList;
     }
 
     @Override

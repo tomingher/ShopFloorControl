@@ -11,14 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-import hu.tomi.shopfloor.model.bean.Location;
-import hu.tomi.shopfloor.model.bean.Manufacturer;
-import hu.tomi.shopfloor.model.bean.Product;
-import hu.tomi.shopfloor.model.bean.Shelf;
-import hu.tomi.shopfloor.model.bean.ShelfData;
-import hu.tomi.shopfloor.model.bean.Storage;
-import hu.tomi.shopfloor.model.bean.WareHouse;
-import hu.tomi.shopfloor.model.bean._Package;
+import hu.tomi.shopfloor.model.bean.*;
 
 public class ShopFloorDAODB implements ShopFloorDAO {
 	
@@ -639,7 +632,12 @@ public class ShopFloorDAODB implements ShopFloorDAO {
 		return locations;
 	}
 
-	@Override
+    @Override
+    public List<LocationData> getLocationData() {
+        return null;
+    }
+
+    @Override
 	public boolean addPackage(_Package _package) {
 		
 		boolean everythingisok = false;

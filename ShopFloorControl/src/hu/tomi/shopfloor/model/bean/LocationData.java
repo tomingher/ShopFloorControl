@@ -5,21 +5,6 @@ package hu.tomi.shopfloor.model.bean;
  */
 public class LocationData {
 
-    /*SELECT wh.name AS "Warehouse name"
-			,'Storage ' || st.id AS "Storage name"
-			,'Shelf ' || sh.id AS "Shelf"
-			,sh.width AS "Shelf width"
-      ,coalesce('Location' || lo.id, 'Empty') AS "Location"
-      ,coalesce(cast(lo.width AS VARCHAR(50)), 'Empty') AS "Location width"
-      ,sh.width - coalesce(sum(lo.width), 0) AS "Free width"
-			FROM warehouse AS wh
-			JOIN storage AS st ON st.warehouseid = wh.id
-			JOIN shelf AS sh ON sh.storageid = st.id
-			LEFT JOIN location AS lo ON lo.shelfid = sh.id
-      LEFT JOIN location AS lo2 ON lo2.shelfid = sh.id
-      GROUP BY wh.name, st.id, sh.id, sh.width, lo.id, wh.id
-			ORDER BY wh.id, st.id, sh.id;*/
-
     private String warehousename;
     private String storagename;
     private String shelf;

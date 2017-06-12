@@ -13,12 +13,6 @@ public class ProductTableModel extends AbstractTableModel {
 	List<Product> products;
 	
 	private String[] columnNames = new String[] {"id", "manufacturerid", "weight", "quantity", "description"};
-	
-	/*ID SERIAL PRIMARY KEY NOT NULL,
-    ManufacturerID INT NOT NULL,
-    Weight FLOAT NOT NULL,
-    Quantity INT NOT NULL,
-    Description VARCHAR(200) NOT NULL*/
 
 	public ProductTableModel(List<Product> products	) {
 		super();
