@@ -1,22 +1,11 @@
 package hu.tomi.shopfloor.view;
 
-import hu.tomi.shopfloor.model.bean.WareHouse;
-import hu.tomi.shopfloor.model.bean.Storage;
-import hu.tomi.shopfloor.model.bean.Shelf;
-import hu.tomi.shopfloor.model.bean.ShelfData;
-import hu.tomi.shopfloor.model.bean.Location;
-import hu.tomi.shopfloor.model.bean._Package;
+import hu.tomi.shopfloor.model.bean.*;
 import hu.tomi.shopfloor.view.dialogs.AddLocationDialog;
 import hu.tomi.shopfloor.view.dialogs.AddShelfDialog;
 import hu.tomi.shopfloor.view.dialogs.AddStorageDialog;
 import hu.tomi.shopfloor.view.dialogs.AddWarehouseDialog;
-import hu.tomi.shopfloor.view.tablemodels.ManufacturerTableModel;
-import hu.tomi.shopfloor.view.tablemodels.ProductTableModel;
-import hu.tomi.shopfloor.view.tablemodels.ShelfDataTableModel;
-import hu.tomi.shopfloor.view.tablemodels.StorageTableModel;
-import hu.tomi.shopfloor.view.tablemodels.WarehouseTableModel;
-import hu.tomi.shopfloor.model.bean.Manufacturer;
-import hu.tomi.shopfloor.model.bean.Product;
+import hu.tomi.shopfloor.view.tablemodels.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,7 +28,7 @@ public class ShopFloorMenu extends JMenuBar implements ActionListener {
 
         createMenuPoint("Warehouse", "Add Warehouse",  "List Warehouses"); // ő a raktár, egyedileg készül
         createMenuPoint("Storage Shelves", "Add Storage", "List Storages"); //Ő a nagy polc, vele van tele a raktár, az ő polcait ltérehozásnál mondom  meg
-        createMenuPoint("Shelf", "Add Shelf", "List Shelves");          
+        createMenuPoint("Shelf", "Add Shelf", "List Shelves");
         createMenuPoint("Location", "Add Location", "List Locations"); // Polcon belül lokáció
         createMenuPoint("Product", "Create Product", "List Products");//termék
         createMenuPoint("Manufacturer", "Create Manufacturers", "List Manufacturers");//gyártó
@@ -128,6 +117,14 @@ public class ShopFloorMenu extends JMenuBar implements ActionListener {
         	
         	new AddLocationDialog(gui, true, gui.getController().getStorageNames());
         	
+        }else if(actionCommand.equals("List Locations")){
+            List<LocationData> locationdataList = gui.getController().getLocationData();
+
+            JTable table = new JTable(new LocationDataTableModel(locationdataList));
+
+            JScrollPane container = new JScrollPane(table);
+
+            gui.setContent(container);
         }
 		
 	}
