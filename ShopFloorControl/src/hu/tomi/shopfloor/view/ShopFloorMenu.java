@@ -111,7 +111,7 @@ public class ShopFloorMenu extends JMenuBar implements ActionListener {
             gui.setContent(container);
         }else if(actionCommand.equals("Add Shelf")){
         	
-        	new AddShelfDialog(gui, true,gui.getController().getStorageNames());
+        	new AddShelfDialog(gui, true, gui.getController().getStorageNames());
         	
         }else if(actionCommand.equals("Add Location")){
         	
@@ -126,6 +126,5 @@ public class ShopFloorMenu extends JMenuBar implements ActionListener {
 
             gui.setContent(container);
         }
-		
 	}
 }

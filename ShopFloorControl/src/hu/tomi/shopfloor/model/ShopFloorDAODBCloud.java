@@ -64,7 +64,7 @@ public class ShopFloorDAODBCloud implements ShopFloorDAO {
             "ORDER BY wh.id, s.id;";
 
     private static final String SQL_SELECT_STORAGENAMES = "SELECT " +
-            "wh.name || ' ' || st.id AS storagename " +
+            "wh.name || ' Storage - ' || st.id AS storagename " +
             "FROM warehouse AS wh " +
             "JOIN storage AS st ON st.warehouseid = wh.id " +
             "ORDER BY wh.ID";
@@ -102,10 +102,7 @@ public class ShopFloorDAODBCloud implements ShopFloorDAO {
 
     private static final String SQL_SELECT_LOCATIONS = "SELECT * FROM Location";
 
-    private static final String SQL_INSERT_LOCATION =
-            "INSERT INTO location " +
-                    "(ShelfID, Height, Width, Depth) " +
-                    "VALUES (?, ?, ?, ?)";
+    private static final String SQL_INSERT_LOCATION = "{call addlocation(?,?,?,?) }";
 
     private static final String SQL_SELECT_LOCATIONDATA = "SELECT wh.name AS \"Warehouse name\"\n" +
             " ,'Storage ' || st.id AS \"Storage name\"\n" +
@@ -442,8 +439,7 @@ public class ShopFloorDAODBCloud implements ShopFloorDAO {
             }
 
             query = conn.prepareCall(SQL_INSERT_SHELF);
-            //query = conn.prepareCall("{call addshelf(?,?,?,?,?) }");
-            //SELECT addshelf('Masodik Raktar 5', 2,2,2,2);
+
             int index = 1;
             query.setString(index++, shelf.getStorageName());
             query.setFloat(index++, shelf.getHeight());
@@ -658,7 +654,7 @@ public class ShopFloorDAODBCloud implements ShopFloorDAO {
         boolean everythingisok = false;
 
         Connection conn = null;
-        PreparedStatement query = null;
+        CallableStatement query = null;
 
         try {
             conn = DriverManager.getConnection(DATABASE, USER, PASSWORD);
@@ -667,24 +663,26 @@ public class ShopFloorDAODBCloud implements ShopFloorDAO {
                 System.out.println("Connected to the PostgreSQL CLOUD server successfully.");
             }
 
-            query = conn.prepareStatement(SQL_INSERT_LOCATION);
+            query = conn.prepareCall(SQL_INSERT_LOCATION);
 
             int index = 1;
-            query.setInt(index++, location.getShelfID());
+            query.setString(index++, location.getStorageName());
             query.setFloat(index++, location.getHeight());
             query.setFloat(index++, location.getWidth());
             query.setFloat(index++, location.getDepth());
 
-            int rowsAffected = query.executeUpdate();
 
-            if (rowsAffected == 1) {
+            boolean procedurewentwell = query.execute();
+            query.close();
+
+            if (procedurewentwell == true) {
                 everythingisok = true;
+                System.out.println("Succesfully added location.");
             }
 
         } catch (SQLException e) {
             System.out.println("Failed to add location.");
             e.printStackTrace();
-
         } finally {
             try {
                 if (query != null) {
@@ -697,7 +695,7 @@ public class ShopFloorDAODBCloud implements ShopFloorDAO {
             try {
                 if (conn != null) {
                     conn.close();
-                    System.out.println("Connection closed successfully!");
+                    System.out.println("Connection closed succesfully when inserting location.");
                 }
             } catch (SQLException e) {
                 System.out.println("Failed to close connection when inserting location.");

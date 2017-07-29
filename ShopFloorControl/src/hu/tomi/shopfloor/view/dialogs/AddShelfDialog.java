@@ -21,22 +21,11 @@ import javax.swing.JSpinner;
 
 public class AddShelfDialog extends JDialog implements ActionListener {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -5942552254566788667L;
 	
 	private ShopFloorGUI gui;
-	
-	private String[] placeholderArray = {
-			"First element",
-			"Second element",
-			"Third element"
-	};
-
 	private List<String> storageNamesList;
-	private String[] storageNamesArray;	
-	
+	private String[] storageNamesArray;
 	private JComboBox<String> storageNameComboBox;
 	private JSpinner heightSpinner = new JSpinner();
 	private JSpinner widthSpinner = new JSpinner();
@@ -85,6 +74,7 @@ public class AddShelfDialog extends JDialog implements ActionListener {
 		setVisible(true);	
 		
 	}
+
 	
 	private JPanel createSettingPanel() {
 		JPanel settingPanel = new JPanel();
@@ -105,10 +95,10 @@ public class AddShelfDialog extends JDialog implements ActionListener {
 		
 		settingPanel.add(new JLabel("Load Capacity"));
 		settingPanel.add(this.loadcapacitySpinner);
-		
 				
 		return settingPanel;
 	}
+
 
 	private JPanel createButtonpanel() {
 		JPanel buttonPanel = new JPanel();
@@ -123,6 +113,7 @@ public class AddShelfDialog extends JDialog implements ActionListener {
 		
 		return buttonPanel;
 	}
+
 	
 	private JPanel createDialogPanel(JPanel settingPanel, JPanel buttonPanel) {
 		JPanel dialogPanel = new JPanel();
