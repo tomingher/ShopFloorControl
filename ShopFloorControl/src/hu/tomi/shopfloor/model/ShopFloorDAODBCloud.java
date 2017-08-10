@@ -110,7 +110,9 @@ public class ShopFloorDAODBCloud implements ShopFloorDAO {
             " ,sh.width AS \"Shelf width\"\n" +
             " ,coalesce('Location' || lo.id, 'Empty') AS \"Location\"\n" +
             " ,coalesce(cast(lo.width AS VARCHAR(50)), 'Empty') AS \"Location width\"\n" +
-            " ,sh.width - coalesce(sum(lo.width), 0) AS \"Free width\"\n" +
+            " ,coalesce(CASE WHEN (sh.width - sum(lo.width) < 0) THEN 0\n" +
+            "           ELSE sh.width - sum(lo.width)\n" +
+            "           END  , 0)   AS \"Free width\"\n" +
             " FROM warehouse AS wh\n" +
             " JOIN storage AS st ON st.warehouseid = wh.id\n" +
             " JOIN shelf AS sh ON sh.storageid = st.id\n" +
